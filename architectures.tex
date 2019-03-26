@@ -83,7 +83,7 @@
 
 \miniframesoff
 
-\licenseframe{github.com/severin-lemaignan/lectures-hri-architectures}
+\licenseframe{github.com/severin-lemaignan/lecture-hri-architectures}
 
 \maketitle
 
@@ -139,8 +139,9 @@
 \begin{frame}{In this lecture}
 
 \begin{itemize}
+    \item<+-> Control paradigms
+    \item<+-> One architecture instantiation
     \item<+-> Cognitive architectures
-    \item<+-> One example of a semantic-aware architecture
 \end{itemize}
 
 \end{frame}
@@ -531,6 +532,13 @@ Action open_fridge
 
 \end{frame}
 
+\begin{frame}[plain]
+    \Large
+    \centering
+    \bf
+    How would that look, if applied to HRI?
+\end{frame}
+
 \begin{frame}{Task planning}
 
     \centering
@@ -579,9 +587,9 @@ Action open_fridge
 \videoframe[0.7]{videos/clean-table.webm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{
-%\paper{Lemaignan et al. {\bf Artificial Cognition for Social Human-Robot
-%     Interaction: An Implementation} Artifical Intelligence, 2016}
+{
+\paper{Lemaignan et al. {\bf Artificial Cognition for Social Human-Robot
+     Interaction: An Implementation} Artifical Intelligence, 2016}
 \begin{frame}{Full social \& autonomous interaction: one example}
 
     \begin{center}
@@ -974,7 +982,7 @@ Action open_fridge
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Integrating into an architecture}
+\section{From an architecture perspective}
 
 \begin{frame}[label=ctrlstrategies]{Control strategies}
 
@@ -1064,7 +1072,7 @@ Action open_fridge
 {
     \paper{Lemaignan et al., {\bf Artificial Cognition for Social Human-Robot
     Interaction: An Implementation}, Artifical Intelligence, 2017}
-\begin{frame}<1-6>[label=archi]{A symbolic control architecture}
+\begin{frame}<1-7>[label=archi]{A symbolic control architecture}
     \begin{figure}
         \centering
 
@@ -1147,7 +1155,8 @@ Action open_fridge
                 \node at (9,0)[skill, fill=hriSec3CompDark!\dimming] (mhp) {Motion and manipulation \\ planning};
                 \path (shary.340) edge [<->, bend left] node[label] {motion plan \\ requests} (mhp);
                 \path (spark.5) edge [->, bend right] node[label] {environment\\model} (mhp);
-                \path (lowlevel.east) edge [<-, bend right=60, looseness=1.3] node[label] {atomic\\actions} (mhp.south east);
+                \path (lowlevel.east) edge [<-, bend right=60, looseness=1.9]
+                node[label] {atomic\\actions} (shary.south east);
                 }
 
 
@@ -1165,7 +1174,7 @@ Action open_fridge
 
 
 \end{frame}
-%}
+}
 
 
 %\videoframe[0.56]{videos/dialogs.webm}
@@ -1176,9 +1185,9 @@ Action open_fridge
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Cognitive Architectures}
+\section{A glimpse into cognition}
 
-\begin{frame}{Cognitive Architecture?}
+\begin{frame}{Cognition?}
 \centering
         \resizebox{!}{0.7\paperheight}{%
             \begin{tikzpicture}[
@@ -1237,12 +1246,37 @@ Action open_fridge
     }
 \end{frame}
 
+
+\begin{frame}[plain]
+
+    \only<1>{
+    \Large
+    \centering
+    \bf
+    What is a \emph{cognitive} architecture?
+}
+
+    \only<2>{
+    \highlightbox{Support modelling (human) social cognition\\\scriptsize(application to robots nice to have)}
+
+        \vspace{2em}
+        or...\\
+        \vspace{1em}
+
+        \highlightbox{Support thinking about robot programming \\in term of socio-cognitive skills}
+    }
+
+
+
+
+\end{frame}
+
 \imageframe[color=white, caption=Islands of desired Cognitive Functionality]{figs/islands1}
 \imageframe[color=white, caption=Linking islands together: the technical integration approach]{figs/islands2}
 \imageframe[color=white, caption=Exploring common underlying principles of the islands]{figs/islands3}
 \imageframe[color=white, caption=Constructing cognitive architectures from these principles]{figs/islands4}
 
-\begin{frame}{Three Interpretations of CogArch}
+\begin{frame}{Three Interpretations of Cognitive Architectures}
 
     \begin{multicols}{2}
         \resizebox{0.7\columnwidth}{!}{%
@@ -1274,7 +1308,7 @@ Action open_fridge
 
     {\scriptsize -- Define required functionality of robots \\-- Implement algorithms (etc) necessary}
 
-    {\bf 3. CogArch as Methodology}
+    {\bf 3. Cognitive architectures as Methodology}
 
     {\scriptsize -- Formalising assumptions \\-- Integrating knowledge from multiple disciplines \\-- Iteratively updating architecture}
 
@@ -1290,10 +1324,12 @@ Action open_fridge
         \item Apply model to robotics system
     \end{itemize}
     
-    Multiple examples in the literature of (aspects of) this process, at least starting from an existing cognitive architecture
-    
 \end{frame}
 
+
+{
+    \paper{Devin, Alami {\bf An implemented theory of mind to improve
+    human-robot shared plans execution}, HRI, 2016}
 
 \begin{frame}{Architectures to model human cognition}
 
@@ -1368,7 +1404,7 @@ Action open_fridge
 
 
 \end{frame}
-
+}
 
 \begin{frame}{2. Technical Integration}    
 
@@ -1379,12 +1415,11 @@ Action open_fridge
         \item Run experiment
     \end{itemize}
     
-	A few examples in the literature of (aspects of) this process.
 
 \end{frame}
 
 
-\begin{frame}{3. CogArch as Methodology}    
+\begin{frame}{3. Cognitive architectures as Methodology}    
 
     \begin{itemize}
         \item Human-derived evidence (from perhaps multiple domains)
@@ -1393,12 +1428,10 @@ Action open_fridge
         \item Feed back results into principles and constraints; repeat
     \end{itemize}
     
-    This process not typically explicit in the literature, but rather implicit in the development of cognitive (model) architectures in psychology/CogSci for example. Also includes those approaches that emphasise fundamental mechanisms rather than human-level functionality.    
-    
 \end{frame}
 
 
-\begin{frame}{Functions for Social Cognition}
+\begin{frame}{Surface functions for Social Cognition}
 \centering
         \resizebox{!}{0.7\paperheight}{%
             \begin{tikzpicture}[
@@ -1674,7 +1707,7 @@ Action open_fridge
 
 \miniframesoff
 
-\begin{frame}{Bibliography}
+\begin{frame}{Additional bibliography}
 \begin{thebibliography}{10}
 
     \beamertemplatearticlebibitems
@@ -1709,6 +1742,48 @@ Action open_fridge
   \end{thebibliography}
 \end{frame}
 
+\begin{frame}{Additional bibliography}
+\begin{thebibliography}{10}
+\footnotesize
+    \beamertemplatearticlebibitems
+    \bibitem{baxter2013cognitive}
+    P. Baxter, J. de Greeff, T. Belpaeme
+    \newblock \doublequoted{Cognitive Architecture for HRI: Towards behavioural
+    alignment}
+    \newblock 2013
+
+
+    \beamertemplatearticlebibitems
+    \bibitem{lemaignan2017implementation}
+    S. Lemaignan, M. Warnier, A.E. Sisbot, R. Alami
+    \newblock \doublequoted{Artificial Cognition for Social Human-Robot
+    Interaction: An Implementation}
+    \newblock 2017
+
+    \beamertemplatearticlebibitems
+    \bibitem{morse2010epigenetic}
+    A. Morse, J. de Greeff, T. Belpaeme, A. Cangelosi
+    \newblock \doublequoted{Epigenetic Robotics Architecture}
+    \newblock 2010
+
+    \beamertemplatearticlebibitems
+    \bibitem{rueckert2016recurrent}
+    A. Rueckert, D. Kappel, D. Tanneberg, D. Pecevski, J. Peters
+    \newblock \doublequoted{Recurrent Spiking Networks Solve Planning Tasks}
+    \newblock 2016
+
+
+    \beamertemplatebookbibitems
+    \bibitem{vernon2014artifical}
+    D. Vernon
+    \newblock \doublequoted{Artificial Cognitive Systems}
+    \newblock 2013
+
+
+  \end{thebibliography}
+\end{frame}
+
+
 \begin{frame}{}
     \begin{center}
         \Large
@@ -1718,8 +1793,8 @@ Action open_fridge
         \url{severin.lemaignan@brl.ac.uk} \\[1em]
 
         Slides:\\
-        \href{https://github.com/severin-lemaignan/lecture-social-architectures}{\small
-        github.com/severin-lemaignan/lecture-architectures}
+        \href{https://github.com/severin-lemaignan/lecture-hri-architectures}{\small
+        github.com/severin-lemaignan/lecture-hri-architectures}
 
     \end{center}
 \end{frame}
@@ -2093,46 +2168,6 @@ Action open_fridge
     \end{multicols}
 \end{frame}
 
-
-\begin{frame}{Bibliography}
-\begin{thebibliography}{10}
-\footnotesize
-    \beamertemplatearticlebibitems
-    \bibitem{baxter2013cognitive}
-    P. Baxter, J. de Greeff, T. Belpaeme
-    \newblock \doublequoted{Cognitive Architecture for HRI: Towards behavioural
-    alignment}
-    \newblock 2013
-
-
-    \beamertemplatearticlebibitems
-    \bibitem{lemaignan2012towards}
-    S. Lemaignan, R. Alami, A. K. Pandey, M. Warnier, J. Guitton
-    \newblock \doublequoted{Towards Grounding Human-Robot Interaction}
-    \newblock 2012
-
-    \beamertemplatearticlebibitems
-    \bibitem{morse2010epigenetic}
-    A. Morse, J. de Greeff, T. Belpaeme, A. Cangelosi
-    \newblock \doublequoted{Epigenetic Robotics Architecture}
-    \newblock 2010
-
-    \beamertemplatearticlebibitems
-    \bibitem{rueckert2016recurrent}
-    A. Rueckert, D. Kappel, D. Tanneberg, D. Pecevski, J. Peters
-    \newblock \doublequoted{Recurrent Spiking Networks Solve Planning Tasks}
-    \newblock 2016
-
-
-    \beamertemplatebookbibitems
-    \bibitem{vernon2014artifical}
-    D. Vernon
-    \newblock \doublequoted{Artificial Cognitive Systems}
-    \newblock 2013
-
-
-  \end{thebibliography}
-\end{frame}
 
 
 \end{document}
