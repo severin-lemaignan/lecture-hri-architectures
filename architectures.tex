@@ -308,6 +308,69 @@
 
 \end{frame}
 
+{
+    \paper{Brooks {\bf A robust layered control system for a mobile robot}, 1986}
+\begin{frame}{Subsumption architecture}
+
+        \begin{center}
+            \resizebox{0.9\linewidth}{!}{
+                \begin{tikzpicture}[>=latex,
+                                    every node/.style={draw,minimum width=2cm}]
+                    \node at (0,0) (l0) {level 0};
+                    \node[above=1 of l0] (l1) {level 1};
+                    \node[above=1 of l1] (l2) {level 2};
+                    \node[above=1 of l2] (l3) {level 3};
+                    \coordinate[above=1 of l3] (l4);
+
+                    \node[left=2 of l0,draw=none] (sensors) {\bf Sensors};
+
+                    \draw[->] (sensors) -- (l0);
+
+                    \coordinate[left=1 of l0] (s0);
+                    \draw[->] (s0) |- (l1);
+                    \draw[->] (s0) |- (l2);
+                    \draw[->] (s0) |- (l3);
+                    \draw[dashed] (s0 |- l3) |- +(0,1);
+
+                    \coordinate[right=3 of l0] (s1);
+                    \coordinate[right=2 of l1] (s2);
+                    \coordinate[right=1 of l2] (s3);
+
+
+                    \node[circle,ultra thick,fill=hriSec2Dark,minimum size=5mm] at (s1) (ss1) {\bf S};
+                    \draw[->] (l0) -- (ss1);
+                    \draw[->] (l1) -| (ss1);
+                    \node[circle,ultra thick,fill=hriSec2Dark,minimum size=5mm] at (s2) (ss2) {\bf S};
+                    \draw[->] (l2) -| (ss2);
+                    \node[circle,ultra thick,fill=hriSec2Dark,minimum size=5mm] at (s3) (ss3) {\bf S};
+                    \draw[->] (l3) -| (ss3);
+
+                    \draw[dashed] (l3 -| s3) |- +(0,1);
+
+                    \node[right=5 of l0,draw=none] (act) {\bf Actuators};
+
+                    \draw[->] (ss1) -- (act);
+
+
+                \end{tikzpicture}
+            }
+        \end{center}
+
+
+
+\end{frame}
+
+\begin{frame}{Example: the MIT Genghis robot}
+    \video[0.75]{0.7\pagewidth}{videos/genghis-short2.mov}
+\end{frame}
+
+}
+
+\imageframe[caption={Level 0: obstacle avoidance}]{subsumption-arch-1}
+\imageframe[caption={Level 1: wander around aimlessly}]{subsumption-arch-2}
+\imageframe[caption={Level 2: exploratory behaviour}]{subsumption-arch-3}
+
+
 \begin{frame}{Behavioural control: strengths/weaknesses}
 
     {\bf Strengths}
@@ -319,6 +382,7 @@
             dynamic environments}
     \end{itemize}
 
+    \pause
     {\bf Weaknesses}
 
     \begin{itemize}
@@ -353,18 +417,16 @@
 
 with Ranger() as robot:
 
-    robot.background_blink()
-    robot.look_at_touches()
+  robot.background_blink()
+  robot.glance_at_touches()
 
-    robot.whenever("dummy", becomes = True)
-                                .do(on_dummy)
-    robot.whenever("dummy", becomes = False)
-                                .do(on_dummy_removed)
-    robot.whenever("scale", increase = 0.3).do(on_toy)
-    robot.whenever("bumper", becomes = True).do(on_bumper)
+  robot.whenever("dummy", becomes = True).do(on_dummy)
+  robot.whenever("dummy", becomes = False).do(on_dummy_removed)
+  robot.whenever("scale", increase = 0.3).do(on_toy)
+  robot.whenever("bumper", becomes = True).do(on_bumper)
 
-    while True:
-        time.sleep(0.1)
+  while True:
+      time.sleep(0.1)
 \end{pythoncode*}
 
     
@@ -491,46 +553,6 @@ def on_toy(robot):
 
 \end{frame}
 
-\begin{frame}[fragile]{Task planning: actions}
-
-    An action has \textbf{pre-conditions} and \textbf{post-conditions} (or \emph{effects}).
-
-\begin{verbatim}
-Action <action name>
-{
-    preconditions {...};
-    effects{...};
-    cost{<cost_function_name>};
-    duration{<duration_function_name>};
-}
-\end{verbatim}
-
-\pause
-
-\begin{verbatim}
-Action open_fridge
-{
-    preconditions {facing_fridge AND fridge_door.closed};
-    effects {facing_fridge AND fridge_door.open};
-}
-\end{verbatim}
-
-\end{frame}
-
-\begin{frame}{Example: Shakey the robot}
-
-    Shakey the robot (Stanford, 1968), using the \textbf{STRIPS} planner
-
-    \begin{columns}
-        \begin{column}{0.5\linewidth}
-                \includegraphics[width=0.8\linewidth]{shakey}
-        \end{column}
-        \begin{column}{0.5\linewidth}
-                \includegraphics[width=\linewidth]{shakey-strips}
-        \end{column}
-    \end{columns}
-
-\end{frame}
 
 \begin{frame}[plain]
     \Large
@@ -543,7 +565,7 @@ Action open_fridge
 
     \centering
 
-        \includegraphics[width=0.7\linewidth]{cleantable/manip_run_cam3}
+        \includegraphics[width=0.9\linewidth]{cleantable/clean-table-situation}
 
     \resizebox{0.9\linewidth}{!}{%
         \begin{tikzpicture}[
@@ -565,18 +587,18 @@ Action open_fridge
 
             \coordinate (h1) at (0,0);
 
-            \node<2> at (h1) (hh1) {\bf TAKE\\GREY\_TAPE\\TABLE};
-            \node<2>[right=of hh1] (h2) {\bf PUT\\GREY\_TAPE\\BIN1 } edge (hh1);
+            \node<2> at (h1) (hh1) {\bf TAKE\\WHITE\_TAPE\\TABLE};
+            \node<2>[right=of hh1] (h2) {\bf PUT\\WHITE\_TAPE\\PINK\_BIN } edge (hh1);
 
             \node[robot, below=2.5 of h1] (r1) {\bf TAKE\\BLACK\_TAPE\\TABLE };
-            \node[robot, right=of r1] (r2) {\bf PUT\\BLACK\_TAPE\\BIN2 } edge (r1);
-            \node[robot, right=of r2] (r3) {\bf TAKE\\BOTTLE\\TABLE } edge (r2);
-            \node[robot, right=of r3] (r4) {\bf PUTRV\\BOTTLE\\TABLE} edge (r3);
-            \node[robot, right=of r4] (r5) {\bf TAKE\\BOOK\\TABLE } edge (r4);
-            \node[robot, right=of r5] (r6) {\bf PUT\\BOOK\\BIN2 } edge (r5);
+            \node[robot, right=of r1] (r2) {\bf PUT\_REACH\\BLACK\_TAPE\\TABLE } edge (r1);
+            \node[robot, right=of r2] (r3) {\bf TAKE\\GREY\_TAPE\\TABLE } edge (r2);
+            \node[robot, right=of r3] (r4) {\bf PUT\_REACH\\GREY\_TAPE\\TABLE} edge (r3);
 
-            \node<2> at (r5 |- h1) (h3) {\bf TAKE\\BOTTLE\\TABLE} edge (h2) edge (r4);
-            \node<2>[right=of h3] (h4) {\bf PUT\\BOTTLE\\BIN1} edge (h3);
+            \node<2> at (r3 |- h1) (h3) {\bf TAKE\\BLACK\_TAPE\\TABLE} edge (h2) edge (r2);
+            \node<2>[right=of h3] (h4) {\bf PUT\\BLACK\_TAPE\\PINK\_BIN} edge (h3);
+            \node<2>[right=of h4] (h5) {\bf TAKE\\GREY\_TAPE\\TABLE} edge (h4) edge (r4);
+            \node<2>[right=of h5] (h6) {\bf PUT\\GREY\_TAPE\\PINK\_BIN} edge (h5);
 
         \end{tikzpicture}
     }
@@ -584,7 +606,7 @@ Action open_fridge
 
 \end{frame}
 
-\videoframe[0.7]{videos/clean-table.webm}
+\videoframe[0.7]{videos/clean-table.webm?start=20}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 {
@@ -1058,7 +1080,9 @@ Action open_fridge
     Each layer has different time constraints (from real-time to possibly `slow'); they typically use different control paradigms
 \end{frame}
 
-
+{
+    \paper{Lemaignan et al., {\bf Artificial Cognition for Social Human-Robot
+    Interaction: An Implementation}, Artifical Intelligence, 2017}
 \begin{frame}{Deliberative architecture for interaction}
 
     One example: the LAAS deliberative architecture for interaction
@@ -1069,9 +1093,7 @@ Action open_fridge
 \end{frame}
 
 
-{
-    \paper{Lemaignan et al., {\bf Artificial Cognition for Social Human-Robot
-    Interaction: An Implementation}, Artifical Intelligence, 2017}
+
 \begin{frame}<1-7>[label=archi]{A symbolic control architecture}
     \begin{figure}
         \centering
@@ -1178,14 +1200,14 @@ Action open_fridge
 
 
 %\videoframe[0.56]{videos/dialogs.webm}
-\videoframe[0.56]{videos/dialogs.webm?autostart}
+%\videoframe[0.56]{videos/dialogs.webm?autostart}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{A glimpse into cognition}
+\section{A glimpse at cognitive architectures}
 
 \begin{frame}{Cognition?}
 \centering
@@ -1276,6 +1298,8 @@ Action open_fridge
 \imageframe[color=white, caption=Exploring common underlying principles of the islands]{figs/islands3}
 \imageframe[color=white, caption=Constructing cognitive architectures from these principles]{figs/islands4}
 
+\imageframe[caption=2018 review by Kotseruba and Tsotsos]{cogarchs-kotseruba-tsotsos2018}
+
 \begin{frame}{Three Interpretations of Cognitive Architectures}
 
     \begin{multicols}{2}
@@ -1323,9 +1347,18 @@ Action open_fridge
         \item Verify/validate resulting model by fitting to existing human data, or making predictions of human behaviour
         \item Apply model to robotics system
     \end{itemize}
+
+    \pause
+
+    \href{http://bicasociety.org/cogarch/architectures.htm}{bicasociety.org/cogarch/architectures.htm}
+
+    Notable examples: \textbf{ACT-R} (Anderson and Lebiere), \textbf{SOAR} (Laird, Newell, Rosenbloom)
+
+    \pause
+
+    \textbf{ACT-R/E} (Trafton) attempts to apply ACT-R to robotics.
     
 \end{frame}
-
 
 {
     \paper{Devin, Alami {\bf An implemented theory of mind to improve
@@ -1431,6 +1464,27 @@ Action open_fridge
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{This all looks quite complicated}
+    \bf
+    Useful to think in terms of \emph{surface functions}, ie the cognitive
+    functions visible and directly useful during the interaction.
+    
+    \pause
+
+    The \emph{underpinning mechanisms} are generally hidden to the end-user.
+    
+    \pause
+    
+    Note that discovering unifying cognitive principles is a key research problem.
+\end{frame}
+
+\imageframe[color=white]{figs/islands4}
+
+{
+    \paper{Baxter, Lemaignan, Trafton {\bf Workshop on Cognitive Architectures
+    for Social HRI} -- HRI 2016}
 \begin{frame}{Surface functions for Social Cognition}
 \centering
         \resizebox{!}{0.7\paperheight}{%
@@ -1511,7 +1565,7 @@ Action open_fridge
     \vfill
     \columnbreak
 
-    {\bf Emotions}
+    {\bf Emotions and expressions}
 
     Recognition {\tiny \bf facial, non-verbal acoustic, verbal features / sentient analysis}\\
     Interpretation {\tiny \bf empathy,...}
@@ -1559,8 +1613,6 @@ Action open_fridge
     Automated web-scrapping~\cite{tenorth2010understanding}
 
     {\bf Social context}
-
-    ?
 
     {\bf Social Rules}
 
@@ -1639,14 +1691,16 @@ Action open_fridge
     \vfill
     \columnbreak
 
+    {\bf Dynamics}
     Turn-taking\\
+    Mimicry\\
     ...
 
     {\bf Long-term interaction}
     Managing post-novelty effect\\
     Lifelong learning\\
     Personalisation\\
-    ...?
+    ...
 
 
     \end{multicols}
@@ -1696,6 +1750,16 @@ Action open_fridge
     \end{multicols}
 
 \end{frame}
+}
+
+\begin{frame}[plain]
+
+    \Large
+    \centering
+    \bf
+
+    Your turn, now!
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1709,6 +1773,13 @@ Action open_fridge
 
 \begin{frame}{Additional bibliography}
 \begin{thebibliography}{10}
+\footnotesize
+    \beamertemplatearticlebibitems
+    \bibitem{kotseruba2018review}
+    I. Kotseruba, J. K. Tsotsos
+    \newblock \doublequoted{A Review of 40 Years in Cognitive Architecture
+        ResearchCore Cognitive Abilities and Practical Applications}
+    \newblock 2018
 
     \beamertemplatearticlebibitems
     \bibitem{lemaignan2015mutual}
@@ -1745,20 +1816,14 @@ Action open_fridge
 \begin{frame}{Additional bibliography}
 \begin{thebibliography}{10}
 \footnotesize
-    \beamertemplatearticlebibitems
+
+\beamertemplatearticlebibitems
     \bibitem{baxter2013cognitive}
     P. Baxter, J. de Greeff, T. Belpaeme
     \newblock \doublequoted{Cognitive Architecture for HRI: Towards behavioural
     alignment}
     \newblock 2013
 
-
-    \beamertemplatearticlebibitems
-    \bibitem{lemaignan2017implementation}
-    S. Lemaignan, M. Warnier, A.E. Sisbot, R. Alami
-    \newblock \doublequoted{Artificial Cognition for Social Human-Robot
-    Interaction: An Implementation}
-    \newblock 2017
 
     \beamertemplatearticlebibitems
     \bibitem{morse2010epigenetic}
@@ -1804,7 +1869,53 @@ Action open_fridge
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Symbolic vs Sub-symbolic architectures}
+\section[]{More on task planning}
+\begin{frame}[fragile]{Task planning: actions}
+
+    An action has \textbf{pre-conditions} and \textbf{post-conditions} (or \emph{effects}).
+
+\begin{verbatim}
+Action <action name>
+{
+    preconditions {...};
+    effects{...};
+    cost{<cost_function_name>};
+    duration{<duration_function_name>};
+}
+\end{verbatim}
+
+\pause
+
+\begin{verbatim}
+Action open_fridge
+{
+    preconditions {facing_fridge AND fridge_door.closed};
+    effects {facing_fridge AND fridge_door.open};
+}
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Example: Shakey the robot}
+
+    Shakey the robot (Stanford, 1968), using the \textbf{STRIPS} planner
+
+    \begin{columns}
+        \begin{column}{0.5\linewidth}
+                \includegraphics[width=0.8\linewidth]{shakey}
+        \end{column}
+        \begin{column}{0.5\linewidth}
+                \includegraphics[width=\linewidth]{shakey-strips}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section[]{Symbolic vs Sub-symbolic architectures}
 
 \againframe<7>{archi}
 
