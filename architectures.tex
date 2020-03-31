@@ -111,6 +111,9 @@
             You have:
             \begin{itemize}
                 \item a map with the important landmarks like {\tt fridge}
+                    \begin{center}
+                        \includegraphics[width=0.5\linewidth]{figs/map}
+                    \end{center}
                 \item the following modules:
             \end{itemize}
         \end{column}
@@ -119,14 +122,14 @@
                 \resizebox{\linewidth}{!}{
                     \begin{tikzpicture}[>=latex,every node/.style={draw,font=\tt}]
 
-                        \node at (0.5,2) {follow\_path\_to};
-                        \node at (2.5,4) {open\_fridge};
+                        \node at (0.5,2) {robot\_navigation};
+                        \node at (2.5,4) {door\_opening};
                         \node at (-0.7,4) {speech\_synthesis};
-                        \node at (0,0) {process\_verbal\_commands};
-                        \node at (3,1) {detect\_mum};
-                        \node at (2.7,3) {detect\_cat};
-                        \node at (0.5,1) {plan\_to};
-                        \node at (0,3) {pick\_up\_beer};
+                        \node at (0,0) {natural\_language\_processor};
+                        \node at (3,1) {person\_detector};
+                        \node at (2.7,3) {cat\_detector};
+                        \node at (-0.5,1) {route\_planner};
+                        \node at (-0.3,3) {object\_picking};
                     \end{tikzpicture}
                 }
             \end{center}
@@ -238,10 +241,10 @@
         Three behaviours:
 
         \begin{itemize}
-            \item {\bf Follow a robot}
+            \item {\bf Follow a human}
                 \begin{itemize}
-                    \item Sensor: IR communication
-                    \item Behaviour: follow another robot
+                    \item Sensor: camera
+                    \item Behaviour: follow a human seen in camera
                 \end{itemize}
             \item {\bf Avoid obstacle}
                 \begin{itemize}
@@ -257,14 +260,15 @@
 
         Which behaviour should have the highest priority? the lowest?
 
-        \source{https://www.clear.rice.edu/engi128/Handouts/Lec17-Robotics.pdf}{example borrowed from Rice University ENGI128}
+        \source{https://www.clear.rice.edu/engi128/Handouts/Lec17-Robotics.pdf}{example
+        inspired by Rice University ENGI128}
     }
     \only<2->{
         \begin{center}
             \resizebox{0.6\linewidth}{!}{
                 \begin{tikzpicture}[>=latex,
                                     every node/.style={draw,minimum width=2cm}]
-                    \node at (0,0) (fol) {Follow a robot};
+                    \node at (0,0) (fol) {Follow a human};
                     \node[below=1 of fol] (wander) {Wander};
                     \node[above=1 of fol] (avoid) {Avoid obstacle};
 
@@ -418,7 +422,6 @@
 with Ranger() as robot:
 
   robot.background_blink()
-  robot.glance_at_touches()
 
   robot.whenever("dummy", becomes = True).do(on_dummy)
   robot.whenever("dummy", becomes = False).do(on_dummy_removed)
@@ -565,12 +568,23 @@ def on_toy(robot):
 
     \centering
 
-        \includegraphics[width=0.9\linewidth]{cleantable/clean-table-situation}
+        \includegraphics[width=0.8\linewidth]{cleantable/clean-table-situation}
+
+        \only<1>{
+            {\bf Goal:} (collaboratively) put the books into the pink bin.
+
+        \small
+        \begin{itemize}
+            \item The bin is only accessible to the human
+            \item Three books: a black one and a grey one (only accessible to
+                robot), a white one (only accessible to the human).
+        \end{itemize}
+    }
 
     \resizebox{0.9\linewidth}{!}{%
         \begin{tikzpicture}[
                 >=latex,
-            robot/.style={fill=hriSec2Comp!50},
+            robot/.style={fill=hriSec2Comp!20},
             every edge/.style={<-, draw, ultra thick},
             every node/.style={ draw, 
                         thick,  
@@ -582,23 +596,23 @@ def on_toy(robot):
                         minimum size=3cm, 
                         inner sep=0.1cm}]
 
-                    \node<2>[font=\rm\Huge, draw=none, fill=none, rotate=90] at (-3, 0) {Human\\actions};
-            \node[font=\rm\Huge, draw=none, fill=none, rotate=90] at (-3, -4.5) {Robot\\actions};
+                    \node<3>[font=\rm\Huge, draw=none, fill=none, rotate=90] at (-3, 0) {Human\\actions};
+            \node<2->[font=\rm\Huge, draw=none, fill=none, rotate=90] at (-3, 4.5) {Robot\\actions};
 
             \coordinate (h1) at (0,0);
 
-            \node<2> at (h1) (hh1) {\bf TAKE\\WHITE\_TAPE\\TABLE};
-            \node<2>[right=of hh1] (h2) {\bf PUT\\WHITE\_TAPE\\PINK\_BIN } edge (hh1);
+            \node<3> at (h1) (hh1) {\bf TAKE\\WHITE\_BOOK\\TABLE};
+            \node<3>[right=of hh1] (h2) {\bf PUT\\WHITE\_BOOK\\PINK\_BIN } edge (hh1);
 
-            \node[robot, below=2.5 of h1] (r1) {\bf TAKE\\BLACK\_TAPE\\TABLE };
-            \node[robot, right=of r1] (r2) {\bf PUT\_REACH\\BLACK\_TAPE\\TABLE } edge (r1);
-            \node[robot, right=of r2] (r3) {\bf TAKE\\GREY\_TAPE\\TABLE } edge (r2);
-            \node[robot, right=of r3] (r4) {\bf PUT\_REACH\\GREY\_TAPE\\TABLE} edge (r3);
+            \node<2->[robot, above=2.5 of h1] (r1) {\bf TAKE\\BLACK\_BOOK\\TABLE };
+            \node<2->[robot, right=of r1] (r2) {\bf PUT\_REACH\\BLACK\_BOOK\\TABLE } edge (r1);
+            \node<2->[robot, right=of r2] (r3) {\bf TAKE\\GREY\_BOOK\\TABLE } edge (r2);
+            \node<2->[robot, right=of r3] (r4) {\bf PUT\_REACH\\GREY\_BOOK\\TABLE} edge (r3);
 
-            \node<2> at (r3 |- h1) (h3) {\bf TAKE\\BLACK\_TAPE\\TABLE} edge (h2) edge (r2);
-            \node<2>[right=of h3] (h4) {\bf PUT\\BLACK\_TAPE\\PINK\_BIN} edge (h3);
-            \node<2>[right=of h4] (h5) {\bf TAKE\\GREY\_TAPE\\TABLE} edge (h4) edge (r4);
-            \node<2>[right=of h5] (h6) {\bf PUT\\GREY\_TAPE\\PINK\_BIN} edge (h5);
+            \node<3> at (r3 |- h1) (h3) {\bf TAKE\\BLACK\_BOOK\\TABLE} edge (h2) edge (r2);
+            \node<3>[right=of h3] (h4) {\bf PUT\\BLACK\_BOOK\\PINK\_BIN} edge (h3);
+            \node<3>[right=of h4] (h5) {\bf TAKE\\GREY\_BOOK\\TABLE} edge (h4) edge (r4);
+            \node<3>[right=of h5] (h6) {\bf PUT\\GREY\_BOOK\\PINK\_BIN} edge (h5);
 
         \end{tikzpicture}
     }
@@ -611,7 +625,7 @@ def on_toy(robot):
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 {
 \paper{Lemaignan et al. {\bf Artificial Cognition for Social Human-Robot
-     Interaction: An Implementation} Artifical Intelligence, 2016}
+     Interaction: An Implementation} Artifical Intelligence, 2017}
 \begin{frame}{Full social \& autonomous interaction: one example}
 
     \begin{center}
@@ -690,32 +704,32 @@ def on_toy(robot):
          %%% KNOWLEDGE
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-         \node[fill=white,align=left] at (cam1 -| kbr) (kb1) {\stmt{TAPE isVisible true}\\
-                                                    \stmt{TAPE isReachable true}\\
-                                                    \stmt{TAPE isOn TABLE}\\
+         \node[fill=white,align=left] at (cam1 -| kbr) (kb1) {\stmt{BOOK isVisible true}\\
+                                                    \stmt{BOOK isReachable true}\\
+                                                    \stmt{BOOK isOn TABLE}\\
                                                     \stmt{BIN isVisible true}\\
                                                     \stmt{BIN isReachable false}};
 
-         \node[fill=white,align=left] at (cam1 -| kbh) {\stmt{TAPE isVisible true}\\
-                                                    \stmt{TAPE isReachable false}\\
-                                                    \stmt{TAPE isOn TABLE}\\
+         \node[fill=white,align=left] at (cam1 -| kbh) {\stmt{BOOK isVisible true}\\
+                                                    \stmt{BOOK isReachable false}\\
+                                                    \stmt{BOOK isOn TABLE}\\
                                                     \stmt{BIN isVisible true}\\
                                                     \stmt{BIN isReachable true}};
 
-         \node[fill=white,align=left] at (cam2 -| kbr) (kb2) {\stmt{ROBOT hasInHand TAPE}};
+         \node[fill=white,align=left] at (cam2 -| kbr) (kb2) {\stmt{ROBOT hasInHand BOOK}};
 
 
-         \node[fill=white,align=left] at (cam3 -| kbr) {\stmt{TAPE isReachable true}\\
-                                        \stmt{TAPE isVisible true} \\
-                                        \stmt{TAPE isOn TABLE}};
+         \node[fill=white,align=left] at (cam3 -| kbr) {\stmt{BOOK isReachable true}\\
+                                        \stmt{BOOK isVisible true} \\
+                                        \stmt{BOOK isOn TABLE}};
 
-         \node[fill=white,align=left ] at (cam3 -| kbh) (kb3) {\stmt{TAPE isReachable true}\\
-                                         \stmt{TAPE isVisible true}};
+         \node[fill=white,align=left ] at (cam3 -| kbh) (kb3) {\stmt{BOOK isReachable true}\\
+                                         \stmt{BOOK isVisible true}};
 
-         \node[fill=white,align=left] at (cam4 -| kbh) (kb4) {\stmt{HUMAN hasInHand TAPE}};
+         \node[fill=white,align=left] at (cam4 -| kbh) (kb4) {\stmt{HUMAN hasInHand BOOK}};
 
-         \node[fill=white,align=left] at (cam5 -| kbr)  {\stmt{TAPE isIn BIN}};
-         \node[fill=white,align=left] at (cam5 -| kbh) (kb5) {\stmt{TAPE isIn BIN}};
+         \node[fill=white,align=left] at (cam5 -| kbr)  {\stmt{BOOK isIn BIN}};
+         \node[fill=white,align=left] at (cam5 -| kbh) (kb5) {\stmt{BOOK isIn BIN}};
 
          %%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %%% PLANS
@@ -723,10 +737,10 @@ def on_toy(robot):
 
          \node[fill=gray!10!white,below=1 of plan] (incoming) {\bf \Large Incoming goal \\ \it Clean the table!};
 
-         \node[anchor=north, plan, robot] at (cam1.south -| probot) (pr1) {\bf TAKE\\TAPE\\TABLE};
-         \node[anchor=north, plan, robot] at (cam2.south -| probot)  (pr2) {\bf PUTRV\\TAPE\\TABLE} edge[<-] (pr1);
-         \node[anchor=north, plan] at (cam3.south -| phuman) (ph1) {\bf TAKE\\TAPE\\TABLE} edge[<-] (pr2);
-         \node[anchor=north, plan]  at (cam4.south -| phuman) (ph2) {\bf PUT\\TAPE\\BIN} edge[<-] (ph1);
+         \node[anchor=north, plan, robot] at (cam1.south -| probot) (pr1) {\bf TAKE\\BOOK\\TABLE};
+         \node[anchor=north, plan, robot] at (cam2.south -| probot)  (pr2) {\bf PUT\_REACH\\BOOK\\TABLE} edge[<-] (pr1);
+         \node[anchor=north, plan] at (cam3.south -| phuman) (ph1) {\bf TAKE\\BOOK\\TABLE} edge[<-] (pr2);
+         \node[anchor=north, plan]  at (cam4.south -| phuman) (ph2) {\bf PUT\\BOOK\\BIN} edge[<-] (ph1);
 
          \node[fill=gray!10!white,anchor=north] at (cam5.south -| plan) (done) {\bf \Large Goal completed};
 
@@ -766,14 +780,14 @@ def on_toy(robot):
 
          \node[anchor=north] at (ph1 -| ahuman) (wait1) {%
              \begin{tikzpicture}
-                 \node[fill=white] (title) {\it wait for pick\\ {\tt TAPE} \it from {\tt TABLE}};
+                 \node[fill=white] (title) {\it wait for pick\\ {\tt BOOK} \it from {\tt TABLE}};
                  \node[below=0.1 of title] {\includegraphics{cleantable/wait_for_pick}};
              \end{tikzpicture}
          };
 
          \node[anchor=north] at (ph2 -| ahuman) (wait2) {%
              \begin{tikzpicture}
-                 \node[fill=white] (title) {\it wait for put\\ {\tt TAPE} \it into {\tt BIN}};
+                 \node[fill=white] (title) {\it wait for put\\ {\tt BOOK} \it into {\tt BIN}};
                  \node[below=0.1 of title] {\includegraphics{cleantable/wait_for_throw}};
              \end{tikzpicture}
          };
@@ -808,10 +822,19 @@ def on_toy(robot):
 }
 
 \begin{frame}{``Cleaning the table''...}
+
+    Example of a subplan: one book, accessible to the robot, to be
+    handed over to the human and discarded.
+
+     \includegraphics[width=0.8\paperwidth]{cleantable/manip_run_cam1.png}
+
+\end{frame}
+\begin{frame}<2,3,4,5>{``Cleaning the table''...}
 \centering
 
-\resizebox{!}{0.75\paperheight}{%
-\begin{tikzpicture}[
+    %\hspace{-2.5cm}\resizebox{!}{0.8\paperheight}{%
+\hspace{-0.5cm}\resizebox{0.9\paperwidth}{!}{
+    \begin{tikzpicture}[
         >=latex,
         every edge/.style={draw, ultra thick, ->},
         every node/.style={align=center},
@@ -828,8 +851,8 @@ def on_toy(robot):
 
         \coordinate<1> (figbottom) at (-0.5, -28.5);
         \coordinate<2-5> (figbottom) at (-0.5, -10.5);
-        \node<2-5> at (0,5) {};
-        \node<2-5> at ($(figbottom) + (0,-5)$) {};
+        \node<2-5> at (25,1) (a) {};
+        \node<2-5> at ($(figbottom) + (0,-5)$) (b) {};
 
 
         \fill[gray!10!white] (4.6,.5) rectangle (figbottom);
@@ -884,32 +907,32 @@ def on_toy(robot):
         %%% KNOWLEDGE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        \node<1,2>[fill=white,align=left] at (cam1 -| kbr) (kb1) {\stmt{TAPE isVisible true}\\
-                                                        \stmt{TAPE isReachable true}\\
-                                                        \stmt{TAPE isOn TABLE}\\
+        \node<1,2>[fill=white,align=left] at (cam1 -| kbr) (kb1) {\stmt{BOOK isVisible true}\\
+                                                        \stmt{BOOK isReachable true}\\
+                                                        \stmt{BOOK isOn TABLE}\\
                                                         \stmt{BIN isVisible true}\\
                                                         \stmt{BIN isReachable false}};
 
-        \node<1,2>[fill=white,align=left] at (cam1 -| kbh) {\stmt{TAPE isVisible true}\\
-                                                        \stmt{TAPE isReachable false}\\
-                                                        \stmt{TAPE isOn TABLE}\\
+        \node<1,2>[fill=white,align=left] at (cam1 -| kbh) {\stmt{BOOK isVisible true}\\
+                                                        \stmt{BOOK isReachable false}\\
+                                                        \stmt{BOOK isOn TABLE}\\
                                                         \stmt{BIN isVisible true}\\
                                                         \stmt{BIN isReachable true}};
 
-        \node<1,3>[fill=white,align=left] at (cam2 -| kbr) (kb2) {\stmt{ROBOT hasInHand TAPE}};
+        \node<1,3>[fill=white,align=left] at (cam2 -| kbr) (kb2) {\stmt{ROBOT hasInHand BOOK}};
 
 
-        \node<1,4>[fill=white,align=left] at (cam3 -| kbr) {\stmt{TAPE isReachable true}\\
-                                            \stmt{TAPE isVisible true} \\
-                                            \stmt{TAPE isOn TABLE}};
+        \node<1,4>[fill=white,align=left] at (cam3 -| kbr) {\stmt{BOOK isReachable true}\\
+                                            \stmt{BOOK isVisible true} \\
+                                            \stmt{BOOK isOn TABLE}};
 
-        \node<1,4>[fill=white,align=left ] at (cam3 -| kbh) (kb3) {\stmt{TAPE isReachable true}\\
-                                             \stmt{TAPE isVisible true}};
+        \node<1,4>[fill=white,align=left ] at (cam3 -| kbh) (kb3) {\stmt{BOOK isReachable true}\\
+                                             \stmt{BOOK isVisible true}};
 
-        \node<1,5>[fill=white,align=left] at (cam4 -| kbh) (kb4) {\stmt{HUMAN hasInHand TAPE}};
+        \node<1,5>[fill=white,align=left] at (cam4 -| kbh) (kb4) {\stmt{HUMAN hasInHand BOOK}};
 
-        \node<1,5>[fill=white,align=left] at (cam5 -| kbr)  {\stmt{TAPE isIn BIN}};
-        \node<1,5>[fill=white,align=left] at (cam5 -| kbh) (kb5) {\stmt{TAPE isIn BIN}};
+        \node<1,5>[fill=white,align=left] at (cam5 -| kbr)  {\stmt{BOOK isIn BIN}};
+        \node<1,5>[fill=white,align=left] at (cam5 -| kbh) (kb5) {\stmt{BOOK isIn BIN}};
 
         %%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%% PLANS
@@ -917,10 +940,10 @@ def on_toy(robot):
 
         \node<1,2>[fill=gray!10!white,below=1 of plan] (incoming) {\bf \Large Incoming goal \\ \it Clean the table!};
 
-        \node<1,2>[anchor=north, plan, robot] at (cam1.south -| probot) (pr1) {\bf TAKE\\TAPE\\TABLE};
-        \node<1,3>[anchor=north, plan, robot] at (cam2.south -| probot)  (pr2) {\bf PUTRV\\TAPE\\TABLE} edge[<-] (pr1);
-        \node<1,4>[anchor=north, plan] at (cam3.south -| phuman) (ph1) {\bf TAKE\\TAPE\\TABLE} edge[<-] (pr2);
-        \node<1,5>[anchor=north, plan]  at (cam4.south -| phuman) (ph2) {\bf PUT\\TAPE\\BIN} edge[<-] (ph1);
+        \node<1,2>[anchor=north, plan, robot] at (cam1.south -| probot) (pr1) {\bf TAKE\\BOOK\\TABLE};
+        \node<1,3>[anchor=north, plan, robot] at (cam2.south -| probot)  (pr2) {\bf PUT\_REACH\\BOOK\\TABLE} edge[<-] (pr1);
+        \node<1,4>[anchor=north, plan] at (cam3.south -| phuman) (ph1) {\bf TAKE\\BOOK\\TABLE} edge[<-] (pr2);
+        \node<1,5>[anchor=north, plan]  at (cam4.south -| phuman) (ph2) {\bf PUT\\BOOK\\BIN} edge[<-] (ph1);
 
         \node<1,5>[fill=gray!10!white,anchor=north] at (cam5.south -| plan) (done) {\bf \Large Goal completed};
 
@@ -960,14 +983,14 @@ def on_toy(robot):
 
         \node<1,4>[anchor=north] at (ph1 -| ahuman) (wait1) {%
             \begin{tikzpicture}
-                \node[fill=white] (title) {\it wait for pick\\ {\tt TAPE} \it from {\tt TABLE}};
+                \node[fill=white] (title) {\it wait for pick\\ {\tt BOOK} \it from {\tt TABLE}};
                 \node[below=0.1 of title] {\includegraphics{cleantable/wait_for_pick}};
             \end{tikzpicture}
         };
 
         \node<1,5>[anchor=north] at (ph2 -| ahuman) (wait2) {%
             \begin{tikzpicture}
-                \node[fill=white] (title) {\it wait for put\\ {\tt TAPE} \it into {\tt BIN}};
+                \node[fill=white] (title) {\it wait for put\\ {\tt BOOK} \it into {\tt BIN}};
                 \node[below=0.1 of title] {\includegraphics{cleantable/wait_for_throw}};
             \end{tikzpicture}
         };
@@ -979,7 +1002,7 @@ def on_toy(robot):
         \draw<1,2>[dotted, ->, in=45, out=180] (incoming.west) to (kb1);
         \draw<1,2>[dotted, ->, bend right] (kb1) to (pr1);
         \draw<1,2>[dotted, ->, bend left] (pr1) to (ep1);
-        \draw<1,2>[dotted, ->, in=45, out=180] (ae1.west) to (kb2);
+        \draw<1>[dotted, ->, in=45, out=180] (ae1.west) to (kb2);
         \draw<1,3>[dotted, ->, bend right] (kb2) to (pr2);
         \draw<1,3>[dotted, ->, bend left] (pr2) to (ep2);
         \draw<1>[dotted, ->, in=45, out=180] (ae2.west) to (kb3);
@@ -1013,7 +1036,7 @@ def on_toy(robot):
     \begin{itemize}
         \item \emph{bottom-up} approach
         \item lots of independent modules executing concurrently,
-            monitoring sensor values, triggering actions and possibly inhibiting each-others
+            monitoring sensor values, triggering actions and possibly inhibiting each others
         \item hard to organize into complex behaviours; gets messy quickly
     \end{itemize}
 
@@ -1024,7 +1047,7 @@ def on_toy(robot):
     \begin{itemize}
         \item \emph{top-down} approach
         \item starts with high-level goals, decompose into sub-tasks
-        \item not very agile
+        \item not very agile, reacting to unexpected events hard
     \end{itemize}
 
     \pause
@@ -1149,7 +1172,7 @@ def on_toy(robot):
 
                 %%% HATP
                 \uncover<5->{
-                \node at (-6, 2.5)[skill, fill=hriSec1!\dimming] (hatp) {{\bf Task planner}\\ \footnotesize ideally human-aware};
+                \node at (-6, 2.5)[skill, fill=hriSec1!\dimming] (hatp) {{\bf Task planner}\\ \footnotesize human-aware};
                 \path (hatp) edge [<->, bend right] node[label](domain) {world model and \\ agents beliefs} (oro.170);
                 }
 
@@ -1187,7 +1210,7 @@ def on_toy(robot):
       \fill[fill opacity=.7,white] (current bounding box.north west) rectangle (current bounding box.south east);
       \node[stmt] at (symfact) {isOn(bottle, table)\\lookAt(human1, bottle)};
       \node[stmt] at (nlp) {lookAt(human1, ?obj)\\desires(human1, PickUp, bottle)};
-      \node[stmt] at (domain) {isAvailable(?gripper) $\wedge$ isA(?gripper, Gripper)\\isOn(bottle, ?obj)};
+      \node[stmt] at (domain) {isAvailable(?effector) $\wedge$ isA(?effector, Gripper)\\isOn(bottle, ?obj)};
       \node[stmt] at (evts) {isA(action23425, PickUp) $\wedge$ currentlyPerforming(action23425)};
   }
             \end{tikzpicture}
@@ -1298,7 +1321,7 @@ def on_toy(robot):
 \imageframe[color=white, caption=Exploring common underlying principles of the islands]{figs/islands3}
 \imageframe[color=white, caption=Constructing cognitive architectures from these principles]{figs/islands4}
 
-\imageframe[caption=2018 review by Kotseruba and Tsotsos]{cogarchs-kotseruba-tsotsos2018}
+\imageframe[caption=2018 meta-meta-review by Kotseruba and Tsotsos]{cogarchs-kotseruba-tsotsos2018}
 
 \begin{frame}{Three Interpretations of Cognitive Architectures}
 
